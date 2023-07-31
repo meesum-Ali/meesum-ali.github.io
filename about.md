@@ -15,7 +15,6 @@ permalink: /about/
 ✨ I am available for consultation and collaboration, offering my expertise in problem solving, organizational improvements, system thinking, lean software development, and extreme programming. Let's work together to tackle complex challenges, drive positive change, and achieve exceptional results for your organization.
 
 
-
 ![](https://meesum-ali.github.io/assets/images/profile-pic.jpg)
 
 [Twitter](http://www.twitter.com/meesum1992)  
