@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "The Power of System Thinking in Software Development"
-date: 2023-07-31 19:58:01 +0500
+date: 2025-05-13 19:58:01 +0500
 categories: [software-development, system-thinking]
 tags: [system-thinking, software-architecture, best-practices, organizational-improvement]
 description: "Learn how system thinking principles can improve software development through better architecture, problem analysis, and team collaboration."
