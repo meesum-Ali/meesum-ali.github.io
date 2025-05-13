@@ -30,6 +30,11 @@ twitter_username: meesum1992
 github_username: meesum-ali
 linkedin_username: smeesumali
 
+# Favicon settings
+favicon:
+  source: /assets/images/favicon.ico
+  fallback_text: MA
+
 # SEO settings
 twitter:
   username: meesum1992
