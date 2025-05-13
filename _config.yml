@@ -21,16 +21,31 @@
 title: Meesum Ali
 email: meesumdex@gmail.com
 description: >- # this means to ignore newlines until "baseurl:"
-  🌟 Problem Solver | Driving Organisational Improvements through System Thinking | Advocates Lean Software Development and Extreme Programming | Software Engineer and Educator
+  Software Engineer and Educator specializing in System Thinking, Lean Development, 
+  and Organizational Improvement. Sharing insights on software engineering best practices.
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "" # the base hostname & protocol for your site, e.g. http://example.com
+url: "https://meesum-ali.github.io"
+author: Meesum Ali
 twitter_username: meesum1992
-github_username:  meesum-ali
+github_username: meesum-ali
+linkedin_username: smeesumali
+
+# SEO settings
+twitter:
+  username: meesum1992
+  card: summary
+social:
+  name: Meesum Ali
+  links:
+    - https://twitter.com/meesum1992
+    - https://www.linkedin.com/in/smeesumali
+    - https://github.com/meesum-ali
 
 # Build settings
 theme: minima
 plugins:
   - jekyll-feed
+  - jekyll-seo-tag
 
 # Exclude from processing.
 # The following items will not be processed, by default.
