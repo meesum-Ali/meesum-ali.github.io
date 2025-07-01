@@ -26,17 +26,25 @@ That's where [otel-stack](https://github.com/meesum-Ali/otel-stack) comes in. Th
 ## 🧰 What is otel-stack?
 
 The [otel-stack](https://github.com/meesum-Ali/otel-stack) repository bundles:
-- 🟣 **OpenTelemetry Collector** for ingesting, processing, and exporting telemetry data
-- 🟠 **Jaeger** for distributed tracing visualization
-- 🟡 **Prometheus** for metrics collection
-- 🟢 **Grafana** for dashboards and alerting
-- 🟤 **(Optional) ELK Stack** for centralized logging
+- 🟣 **OpenTelemetry Collector (otelcol):** Ingests, processes, and exports telemetry data (traces, metrics, logs) from your applications.
+- 🟡 **Prometheus:** Scrapes and stores metrics, enabling powerful monitoring and alerting.
+- 🟢 **Grafana:** Visualizes metrics, traces, and logs in beautiful dashboards.
+- 🟠 **Tempo:** A high-scale, cost-effective distributed tracing backend from Grafana Labs, storing and querying traces.
+- 🔵 **Loki:** A horizontally-scalable, highly-available log aggregation system inspired by Prometheus, for storing and querying logs.
 
 All components are orchestrated via Docker Compose, with sensible defaults and extensible configuration. Whether you're running on your laptop or deploying to the cloud, otel-stack provides a unified observability platform.
 
+### 🧩 How the Stack Works
+
+- **otelcol** receives telemetry data from your instrumented applications (using OpenTelemetry SDKs), and routes traces to Tempo, metrics to Prometheus, and logs to Loki.
+- **Prometheus** scrapes metrics from otelcol and your services, storing them for analysis and alerting.
+- **Tempo** stores distributed traces, allowing you to follow requests across services.
+- **Loki** collects and indexes logs, making it easy to correlate logs with traces and metrics.
+- **Grafana** provides a single pane of glass to visualize and explore all your observability data.
+
 ## 💻 Local Development: Observability Without the Hassle
 
-Developers can run the stack locally with a single command. Instrument your code with OpenTelemetry SDKs, and instantly see traces and metrics in Jaeger and Grafana. This tight feedback loop accelerates debugging and helps you build with confidence.
+Developers can run the stack locally with a single command. Instrument your code with OpenTelemetry SDKs, and instantly see traces in Tempo, metrics in Prometheus, and logs in Loki—all visualized in Grafana. This tight feedback loop accelerates debugging and helps you build with confidence.
 
 **Example:**
 ```bash
@@ -52,9 +60,9 @@ Otel-stack isn't just for demos. With minor tweaks, you can deploy the same stac
 
 ## 🌟 Real-World Use Cases
 
-- 🕵️‍♂️ **Microservices Debugging:** Trace requests across services to find latency sources and errors.
-- 📈 **Performance Monitoring:** Visualize metrics like request rates, error counts, and resource usage.
-- 🚨 **Incident Response:** Use logs, traces, and metrics together to diagnose and resolve outages faster.
+- 🕵️‍♂️ **Microservices Debugging:** Trace requests across services to find latency sources and errors using Tempo.
+- 📈 **Performance Monitoring:** Visualize metrics like request rates, error counts, and resource usage in Prometheus and Grafana.
+- 🚨 **Incident Response:** Correlate logs (Loki), traces (Tempo), and metrics (Prometheus) in Grafana to diagnose and resolve outages faster.
 - 🔬 **Continuous Improvement:** Analyze trends over time to guide architectural and process improvements.
 
 ## 🏁 Getting Started
@@ -62,10 +70,70 @@ Otel-stack isn't just for demos. With minor tweaks, you can deploy the same stac
 1. 🧑‍💻 Clone the [otel-stack repo](https://github.com/meesum-Ali/otel-stack).
 2. 📄 Follow the README to spin up the stack locally or in your environment.
 3. 🛠️ Instrument your applications using OpenTelemetry SDKs for your language.
-4. 📊 Explore traces in Jaeger, metrics in Grafana, and logs in ELK (optional).
+4. 📊 Explore traces in Tempo, metrics in Prometheus, and logs in Loki—all via Grafana.
+
+## 📝 Example docker-compose.yml
+
+Here's a simplified version of the stack's `docker-compose.yml`:
+
+```yaml
+version: "3.8"
+services:
+  otelcol:
+    image: otel/opentelemetry-collector-contrib:0.97.0
+    command: ["--config=/etc/otelcol/config.yaml"]
+    volumes:
+      - ./otelcol/otelcol.yaml:/etc/otelcol/config.yaml:ro
+    ports:
+      - "4317:4317"        # OTLP/gRPC IN (traces, metrics, logs)
+      - "8888:8888"        # Collector internal metrics endpoint
+    depends_on:
+      - tempo
+      - loki
+      - prometheus
+
+  grafana:
+    image: grafana/grafana:11.0.0
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+    depends_on:
+      - otelcol
+      - tempo
+      - loki
+      - prometheus
+
+  tempo:
+    image: grafana/tempo:2.4.1
+    command: ["-config.file=/etc/tempo/tempo.yaml"]
+    volumes:
+      - ./tempo/tempo.yaml:/etc/tempo/tempo.yaml:ro
+    ports:
+      - "3200:3200"   # Tempo HTTP query API
+
+  loki:
+    image: grafana/loki:3.0.0
+    command: -config.file=/etc/loki/loki-local.yaml
+    volumes:
+      - ./loki/loki-local.yaml:/etc/loki/loki-local.yaml:ro
+    ports:
+      - "3100:3100"   # Loki push & query API
+
+  prometheus:
+    image: prom/prometheus:v2.52.0
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yaml'
+      - '--web.enable-remote-write-receiver'
+    volumes:
+      - ./prometheus/prometheus.yaml:/etc/prometheus/prometheus.yaml:ro
+    ports:
+      - "9090:9090"   # Prometheus UI & scrape endpoint
+```
 
 ## 🎯 Conclusion
 
-Observability shouldn't be an afterthought. With otel-stack, you can bring world-class monitoring and tracing to every stage of development and operations. Try it out, contribute, and join the movement towards more reliable, transparent software systems. 🌍
+Observability shouldn't be an afterthought. With otel-stack, you can bring world-class monitoring, tracing, and logging to every stage of development and operations. Try it out, contribute, and join the movement towards more reliable, transparent software systems. 🌍
 
 *Image Credit: [OpenTelemetry Logo](https://opentelemetry.io/)* 
