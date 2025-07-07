@@ -5,6 +5,8 @@ categories: [Android, Observability, OpenTelemetry]
 ---
 
 ![Android observability gif](https://media.giphy.com/media/3o7aD2saalBwwftBIY/giphy.gif)
+
+
 *When you finally see what your app is doing in production!*
 
 ---
